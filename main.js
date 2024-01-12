@@ -19,6 +19,8 @@ class Game {
       rounds: 0,
       bullets: false,
       total: 5,
+      full: 0,
+      blank: 0,
     };
 
     switch (this.difficult.toLowerCase()) {
@@ -45,14 +47,16 @@ class Game {
           for (let i = 0; this.magazine.length < this.gameConfig.total; i++) {
             let choice = this.gameRandomizer();
             if (choice === true && full <= 3) {
-              full++;
+              full += 1;
               this.magazine.push(choice);
             } else if (blank < 2) {
-              blank++;
+              blank += 1;
               this.magazine.push(choice);
             }
           }
         }
+        this.gameConfig.full = full;
+        this.gameConfig.blank = blank;
     }
   }
 
@@ -61,7 +65,5 @@ class Game {
   }
 }
 
-const app = new Game("easy");
-app.gameStart();
+export default Game;
 
-console.log(app.magazine);
