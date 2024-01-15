@@ -92,8 +92,4 @@ class Match extends Player {
   }
 }
 
-const tstMatch = new Match("easy", "leo");
-
-tstMatch.play();
-
 export default Match;
