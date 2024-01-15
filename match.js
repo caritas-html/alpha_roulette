@@ -30,23 +30,48 @@ class Match extends Player {
     );
   }
 
-  action(player) {
-    console.log(player);
-    // const actionList = {
-    //     shoot:
-    // }
+  action(actor, victim) {
+    // action shoot
+    let damage = 50; // fixed value for now (todo: make it dynamic)
+    function shot(player) {
+      if (player.life) {
+        player.life -= damage;
+        return `Player ${player} takes ${damage} damage points. Player has ${player.life} life points.`;
+      }
+    }
+
+    rl.question(
+      `Current Playing: ${actor.name} \n Life Points: ${actor.life} \n Actions: \n shot (), \n self shot (). \n \n Your action:`,
+      (playerInput) => {
+        if (
+          playerInput.trim("") == "shot" ||
+          playerInput.trim("") == "shot()"
+        ) {
+          victim.life -= damage;
+          console.log({
+            actor: actor.life,
+            victim: victim.life,
+          });
+        } else if (
+          playerInput.trim("") == "self shot" ||
+          playerInput.trim("") == "self shot ()"
+        ) {
+          actor.life -= damage;
+        }
+      }
+    );
   }
 
   switchPlayerMechanics(player1, player2) {
     console.log(
-      `\n Let the game begin... \n \n \n Difficult: ${this.difficult}, \n Rounds: ${this.gameConfig.rounds}, \n Bullets: ${this.gameConfig.full}, \n Empty Shells: ${this.gameConfig.blank}, \n \n`
+      `\n Let the game begin... \n \n \n Difficult: ${this.difficult}, \n Rounds: ${this.gameConfig.rounds}, \n Bullets: ${this.gameConfig.full}, \n Empty Shells: ${this.gameConfig.blank}, \n`
     );
 
     if (this.currentPlayer) {
-      this.action(player1);
+      this.action(player1, player2);
       this.currentPlayer = !this.currentPlayer;
     } else {
-      action(player2);
+      action(player2, player1);
       this.currentPlayer = !this.currentPlayer;
     }
   }
