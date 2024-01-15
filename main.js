@@ -46,7 +46,7 @@ class Game {
         if (this.difficult == "easy") {
           for (let i = 0; this.magazine.length < this.gameConfig.total; i++) {
             let choice = this.gameRandomizer();
-            if (choice === true && full <= 3) {
+            if (choice === true && full < 3) {
               full += 1;
               this.magazine.push(choice);
             } else if (blank < 2) {

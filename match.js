@@ -10,7 +10,7 @@ class Match extends Player {
   constructor(difficult, player1, player2) {
     super(difficult, player1, player2);
 
-    this.currentPlayer = true; // if true (P1), else (P2)
+    this.currentPlayer = true; // if true (P1 action time), else (P2 action time)
 
     this.gameStart();
   }
@@ -35,13 +35,22 @@ class Match extends Player {
 
   action(actor, victim) {
     // action shoot
-    let damage = 50; // fixed value for now (todo: make it dynamic)
-    let response = "";
+
+    //////// MAGAZINE BLOCK //////////
+    console.log(this.magazine);
+
+    let damage = 0;
+    let lastBullet = this.magazine.pop();
+
+    console.log(lastBullet);
+
+    damage = lastBullet ? 50 : 0;
+    //////////////////////////////////
 
     function shot(player) {
       if (player.life) {
         player.life -= damage;
-        response = `\n Player ${player.name} takes ${damage} damage points. \n `;
+        let response = `\n Player ${player.name} takes ${damage} damage points. \n `;
         console.log(response);
       }
     }
@@ -49,14 +58,15 @@ class Match extends Player {
     rl.question(
       `Current Playing: ${actor.name} \n Actions: \n shot (), \n self shot (). \n \n Your action:`,
       (playerInput) => {
+        let input = playerInput.trim("")
         if (
-          playerInput.trim(" ") == "shot" ||
-          playerInput.trim(" ") == "shot ()"
+          input == "shot" ||
+          input == "shot()"
         ) {
           shot(victim);
         } else if (
-          playerInput.trim(" ") == "self shot" ||
-          playerInput.trim(" ") == "self shot ()"
+          input == "selfshot" ||
+          input == "selfshot()"
         ) {
           shot(actor);
         }
