@@ -33,10 +33,11 @@ class Match extends Player {
     );
   }
 
+  // action shoot
   action(actor, victim) {
-    // action shoot
 
     //////// MAGAZINE BLOCK //////////
+
     let damage = 0;
     let lastBullet = this.magazine.pop();
 
