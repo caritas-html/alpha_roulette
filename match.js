@@ -15,24 +15,6 @@ class Match extends Player {
     this.gameStart();
   }
 
-  introduce() {
-    rl.question(
-      "Russian roulette. Take turns with the virtual revolver, escalating the stakes with each pull. Will you be the last one standing? Load the chamber, make strategic choices, and let the adrenaline-fueled risk unfold. In 'Russian Roulette Royale', only the bravest prevail! \n type YES to start: ",
-      (userInput) => {
-        let response = userInput.toUpperCase();
-        if (response == "YES") {
-          console.clear();
-          console.log(
-            `\n Let the game begin... \n \n \n Difficult: ${this.difficult}, \n Rounds: ${this.gameConfig.rounds}, \n Bullets: ${this.gameConfig.full}, \n Empty Shells: ${this.gameConfig.blank}, \n`
-          );
-          this.switchPlayerMechanics(this.player1, this.player2);
-        } else {
-          rl.close();
-        }
-      }
-    );
-  }
-
   action(actor, victim) {
     // action shoot
 
@@ -43,38 +25,30 @@ class Match extends Player {
     damage = lastBullet ? 50 : 0;
     //////////////////////////////////
 
+    ////// SHOT BLOCK //////////////
     function shot(player) {
       if (player.life) {
         player.life -= damage;
-        let response = `\n Player ${player.name} takes ${damage} damage points. \n `;
-        console.log(response);
+        return player.life;
       }
     }
+    ////////////////////////////////
 
-    rl.question(
-      `Current Playing: ${actor.name} \n Actions: \n shot (), \n self shot (). \n \n Your action:`,
-      (playerInput) => {
-        let input = playerInput.trim("")
-        if (
-          input == "shot" ||
-          input == "shot()"
-        ) {
-          shot(victim);
-        } else if (
-          input == "selfshot" ||
-          input == "selfshot()"
-        ) {
-          shot(actor);
-        }
-        this.switchPlayerMechanics(this.player1, this.player2);
-      }
-    );
+    ////////// ACTION BLOCK /////////
+
+    let input = playerInput.trim("");
+    if (input == "shot" || input == "shot()") {
+      shot(victim);
+    } else if (input == "selfshot" || input == "selfshot()") {
+      shot(actor);
+    }
+    this.switchPlayerMechanics(this.player1, this.player2);
+
+    ////////////////////////////////
   }
 
   switchPlayerMechanics(player1, player2) {
     let matchStatus = `\n ${player1.name}: ${player1.life} life points. \n ${player2.name}: ${player2.life} life points. \n`;
-
-    console.clear();
 
     if (this.currentPlayer) {
       console.log(matchStatus);
@@ -88,7 +62,7 @@ class Match extends Player {
   }
 
   play() {
-    this.introduce();
+    this.switchPlayerMechanics(this.player1, this.player2);
   }
 }
 
