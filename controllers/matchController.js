@@ -30,7 +30,10 @@ export const initGame = (req, res) => {
         },
       };
 
-      res.json(matchStatus);
+      res.json({
+        match,
+        matchStatus,
+      });
     }
   } catch (error) {
     throw new Error(error.message);
@@ -51,19 +54,45 @@ export const getMatchStatus = (req, res) => {
   }
 };
 
-export const shotAdversary = (req, res) => {
+export const shotTime = (req, res) => {
   try {
     const { currentPlayer, playerInput } = req.body;
+    let damage = match.magazine.pop() ? 50 : 0;
 
     if (matchStatus && currentPlayer && playerInput) {
-      if (currentPlayer == matchStatus.players.player1.name) {
-        if (playerInput.trim("") == "shot") {
-          matchStatus.players.player2.life -= 50; // fixed value
+      // player 1 action
+      if (
+        currentPlayer == matchStatus.players.player1.name ||
+        currentPlayer == matchStatus.players.player2.name
+      ) {
+        // verify if player is alive or magazine is empty
+        if (
+          matchStatus.players.player2.life <= 0 ||
+          matchStatus.players.player1.life <= 0 ||
+          match.magazine.length == 0
+        ) {
+          res.json({
+            message: "The Player is already dead.",
+          });
+          return;
+          // verify action and deliver shot
+        } else if (playerInput.trim("") == "shot") {
+          matchStatus.players.player2.life -= damage;
+          // verify action and deliver self shot
         } else if (playerInput.trim("") == "selfshot") {
-          matchStatus.players.player1.life -= 50; // fixed value
+          matchStatus.players.player1.life -= damage;
+          // else for another different input than shot or self shot
         } else {
           throw new Error("Player input not accepted.");
         }
+      } else if (currentPlayer == matchStatus.players.player2.name) {
+        //  -----> change to multiplayer sometime, for now (PC action)
+
+        // PC random choice
+        let choice = Math.random();
+        choice >= 0.5
+          ? (matchStatus.players.player2.life -= damage)
+          : (matchStatus.players.player1.life -= damage);
       }
       res.json({
         matchStatus: matchStatus.players,
