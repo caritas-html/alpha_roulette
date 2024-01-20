@@ -59,12 +59,9 @@ export const shotTime = (req, res) => {
     const { currentPlayer, playerInput } = req.body;
     let damage = match.magazine.pop() ? 50 : 0;
 
-    if (matchStatus && currentPlayer && playerInput) {
+    if (matchStatus && currentPlayer) {
       // player 1 action
-      if (
-        currentPlayer == matchStatus.players.player1.name ||
-        currentPlayer == matchStatus.players.player2.name
-      ) {
+      if (currentPlayer == matchStatus.players.player1.name) {
         // verify if player is alive or magazine is empty
         if (
           matchStatus.players.player2.life <= 0 ||
@@ -82,26 +79,19 @@ export const shotTime = (req, res) => {
         } else if (playerInput.trim("") == "selfshot") {
           matchStatus.players.player1.life -= damage;
           // else for another different input than shot or self shot
-        } else {
-          throw new Error("Player input not accepted.");
         }
-      } else if (currentPlayer == matchStatus.players.player2.name) {
-        //  -----> change to multiplayer sometime, for now (PC action)
-
-        // PC random choice
-        let choice = Math.random();
-        choice >= 0.5
+      } else if (currentPlayer === "PC" && playerInput === "") {
+        Math.random() >= 0.5
           ? (matchStatus.players.player2.life -= damage)
           : (matchStatus.players.player1.life -= damage);
       }
-      res.json({
-        matchStatus: matchStatus.players,
-      });
-    } else {
-      res.json({
-        message: "input errors",
-      });
+    } else if (currentPlayer == matchStatus.players.player2.name) {
+      //  -----> change to multiplayer sometime, for now (PC action)
     }
+
+    res.json({
+      matchStatus: matchStatus,
+    });
   } catch (error) {
     throw new Error(error.message);
   }
