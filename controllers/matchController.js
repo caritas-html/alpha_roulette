@@ -91,6 +91,14 @@ export const shotTime = (req, res) => {
     } else if (currentPlayer == matchStatus.players.player2.name) {
       //  -----> change to multiplayer sometime, for now (PC action)
     }
+    
+    matchStatus.gameConfig.total = match.magazine.length;
+    matchStatus.gameConfig.full = match.magazine.filter(
+      (el) => el === true
+    ).length;
+    matchStatus.gameConfig.blank = match.magazine.filter(
+      (el) => el === false
+    ).length;
 
     res.json({
       matchStatus: matchStatus,
