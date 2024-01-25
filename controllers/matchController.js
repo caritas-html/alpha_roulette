@@ -14,9 +14,9 @@ export const initGame = (req, res) => {
         difficult: match.difficult,
         gameConfig: {
           rounds: match.gameConfig.rounds,
-          total: match.gameConfig.total,
-          full: match.gameConfig.full,
-          blank: match.gameConfig.blank,
+          total: match.magazine.length,
+          full: match.magazine.filter((el) => el === true).length,
+          blank: match.magazine.filter((el) => el === false).length,
         },
         players: {
           player1: {
@@ -42,7 +42,12 @@ export const initGame = (req, res) => {
 export const getMatchStatus = (req, res) => {
   try {
     if (match) {
-      res.json({ matchStatus });
+      if (
+        matchStatus.players.player1.life >= 0 &&
+        matchStatus.players.player2.life >= 0
+      ) {
+        res.json({ matchStatus });
+      }
     } else {
       res.json({
         message: "There is no match running, try init a match",
@@ -59,20 +64,19 @@ export const shotTime = (req, res) => {
     let damage = match.magazine.pop() ? 50 : 0;
 
     if (matchStatus && currentPlayer) {
+      if (
+        matchStatus.players.player2.life <= 0 ||
+        matchStatus.players.player1.life <= 0 ||
+        match.magazine.length <= 0
+      ) {
+        res.json({
+          message: "The Player is already dead.",
+        });
+        return;
+      }
       // player 1 action
-      if (currentPlayer == matchStatus.players.player1.name) {
-        // verify if player is alive or magazine is empty
-        if (
-          matchStatus.players.player2.life <= 0 ||
-          matchStatus.players.player1.life <= 0 ||
-          match.magazine.length <= 0
-        ) {
-          res.json({
-            message: "The Player is already dead.",
-          });
-          return;
-          // verify action and deliver shot
-        } else if (playerInput.trim("") == "shot") {
+      else if (currentPlayer == matchStatus.players.player1.name) {
+        if (playerInput.trim("") == "shot") {
           matchStatus.players.player2.life -= damage;
           // verify action and deliver self shot
         } else if (playerInput.trim("") == "selfshot") {
