@@ -43,7 +43,7 @@ export const initGame = (req, res) => {
 export const getMatchStatus = (req, res) => {
   try {
     if (match) {
-      res.json(matchStatus);
+      res.json({ matchStatus });
     } else {
       res.json({
         message: "There is no match running, try init a match",
@@ -66,7 +66,7 @@ export const shotTime = (req, res) => {
         if (
           matchStatus.players.player2.life <= 0 ||
           matchStatus.players.player1.life <= 0 ||
-          match.magazine.length == 0
+          match.magazine.length <= 0
         ) {
           res.json({
             message: "The Player is already dead.",
