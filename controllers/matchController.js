@@ -31,7 +31,6 @@ export const initGame = (req, res) => {
       };
 
       res.json({
-        match,
         matchStatus,
       });
     }
